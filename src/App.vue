@@ -140,7 +140,11 @@ function renderTracks(): void {
       color: colorForTrack(track),
       weight: 4,
       opacity: opacityForTrack(),
-    }).bindTooltip(`${track.name} (${track.pointCount.toLocaleString()} pts)`);
+    }).bindTooltip(`${track.name} (${track.pointCount.toLocaleString()} pts)`, {
+      sticky: true,
+      direction: 'top',
+      offset: [0, -8],
+    });
 
     layer.addTo(activeMap);
     trackLayers.set(track.id, layer);
