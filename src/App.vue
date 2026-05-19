@@ -40,13 +40,13 @@ onMounted(() => {
   }).addTo(map);
 });
 
-watch(
-  [tracks, colorMode, singleTrackColor, trackOpacity],
-  () => {
-    renderTracks();
-  },
-  { deep: true },
+const renderSignature = computed(() =>
+  tracks.value.map((track) => `${track.id}:${track.visible ? 1 : 0}`).join('|'),
 );
+
+watch([renderSignature, colorMode, singleTrackColor, trackOpacity], () => {
+  renderTracks();
+});
 
 async function chooseFolder(): Promise<void> {
   if ('showDirectoryPicker' in window && typeof window.showDirectoryPicker === 'function') {

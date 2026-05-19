@@ -91,7 +91,11 @@ async function parseGpxFile(file: File, fileIndex: number): Promise<ParsedGpxFil
 }
 
 function byLocalName(root: ParentNode, localName: string): Element[] {
-  return Array.from(root.querySelectorAll('*')).filter((element) => element.localName === localName);
+  if ('getElementsByTagNameNS' in root && typeof root.getElementsByTagNameNS === 'function') {
+    return Array.from(root.getElementsByTagNameNS('*', localName));
+  }
+
+  return Array.from((root as Element | Document).getElementsByTagName(localName));
 }
 
 function firstChildText(root: Element, localName: string): string {
@@ -122,11 +126,14 @@ function boundsForSegments(segments: TrackPoint[][]): TrackBounds {
     maxLon: Number.NEGATIVE_INFINITY,
   };
 
-  return segments.flat().reduce<TrackBounds>((bounds, point) => {
-    bounds.minLat = Math.min(bounds.minLat, point.lat);
-    bounds.maxLat = Math.max(bounds.maxLat, point.lat);
-    bounds.minLon = Math.min(bounds.minLon, point.lon);
-    bounds.maxLon = Math.max(bounds.maxLon, point.lon);
+  return segments.reduce<TrackBounds>((bounds, segment) => {
+    segment.forEach((point) => {
+      bounds.minLat = Math.min(bounds.minLat, point.lat);
+      bounds.maxLat = Math.max(bounds.maxLat, point.lat);
+      bounds.minLon = Math.min(bounds.minLon, point.lon);
+      bounds.maxLon = Math.max(bounds.maxLon, point.lon);
+    });
+
     return bounds;
   }, initial);
 }
