@@ -12,9 +12,9 @@ const issues = ref<FileLoadIssue[]>([]);
 const status = ref('Choose a folder of GPX files to begin.');
 const isLoading = ref(false);
 const sourceFolderName = ref('folder');
-const colorMode = ref<'track' | 'single'>('track');
+const colorMode = ref<'track' | 'single'>('single');
 const singleTrackColor = ref('#1f6f55');
-const trackOpacity = ref(0.32);
+const trackOpacity = ref(0.5);
 
 let map: L.Map | null = null;
 const trackLayers = new Map<string, Polyline>();
